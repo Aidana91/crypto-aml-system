@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>CryptoAML Guard — GNN Dashboard</title>
+    <!-- Подключаем Vis.js для отрисовки графов -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; margin: 0; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .search-box { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        input[type="text"] { width: 450px; padding: 12px; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 15px; }
+        button { padding: 12px 24px; border-radius: 8px; border: none; background: #3b82f6; color: white; font-weight: bold; cursor: pointer; font-size: 15px; }
+        button:hover { background: #2563eb; }
+        .container { display: flex; gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; border: 1px solid #334155; flex: 1; }
+        #network { width: 100%; height: 400px; background-color: #0f172a; border-radius: 8px; border: 1px dashed #334155; }
+        .risk-badge { font-size: 24px; font-weight: bold; margin-top: 10px; }
+        .high-risk { color: #ef4444; }
+        .low-risk { color: #22c55e; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>🛡️ CryptoAML Guard System</h2>
+        <p>Модуль обнаружения аномальных транзакций на основе Графовых Нейронных Сетей (GNN)</p>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="walletInput" placeholder="Введите адрес кошелька или TXID (напр. 1BoatSLR...)" value="1BoatSLRHtKNngkdMv2555YwGCCD8M7m9">
+        <button onclick="analyzeWallet()">Проверить Risk Score</button>
+    </div>
+
+    <div class="container">
+        <!-- Левая панель с результатами -->
+        <div class="card">
+            <h3>Результаты анализа (GNN)</h3>
+            <hr style="border-color: #334155;">
+            <p><strong>Адрес:</strong> <span id="resAddr">-</span></p>
+            <p><strong>Модель:</strong> <span id="resModel">-</span></p>
+            <p><strong>Оценка риска (Risk Score):</strong></p>
+            <div id="resRisk" class="risk-badge">-</div>
+            <p style="margin-top: 15px;"><strong>Статус:</strong> <span id="resStatus">-</span></p>
+        </div>
+
+        <!-- Правая панель с интерактивным графом -->
+        <div class="card" style="flex: 1.5;">
+            <h3>Интерактивный граф транзакций</h3>
+            <div id="network"></div>
+        </div>
+    </div>
+
+    <script>
+        let network = null;
+
+        async function analyzeWallet() {
+            const wallet = document.getElementById('walletInput').value;
+            if (!wallet) return alert('Введите адрес!');
+
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/v1/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet_address: wallet })
+                });
+
+                const data = await response.json();
+
+                // Обновляем метрики
+                document.getElementById('resAddr').innerText = data.address;
+                document.getElementById('resModel').innerText = data.model_used;
+                
+                const riskElem = document.getElementById('resRisk');
+                riskElem.innerText = data.risk_score + '%';
+                riskElem.className = 'risk-badge ' + (data.risk_score > 50 ? 'high-risk' : 'low-risk');
+                
+                document.getElementById('resStatus').innerText = data.status;
+
+                // Отрисовываем граф
+                const container = document.getElementById('network');
+                const graphData = {
+                    nodes: new vis.DataSet(data.graph_data.nodes),
+                    edges: new vis.DataSet(data.graph_data.edges)
+                };
+                const options = {
+                    nodes: { shape: 'dot', size: 20, font: { color: '#ffffff' } },
+                    physics: { enabled: true }
+                };
+                
+                if (network) network.destroy();
+                network = new vis.Network(container, graphData, options);
+
+            } catch (err) {
+                alert('Ошибка подключения к бэкенду FastAPI! Проверьте, запущен ли сервер.');
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Python / PyTorch
+venv/
+__pycache__/
+*.pyc
+*.pt
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# VS Code
+.vscode/

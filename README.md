@@ -33,4 +33,37 @@
  **Запустите интерфейс:**
 Откройте файл frontend/index.html в вашем браузере (или через расширение Live Server в VS Code).
 
+🇬🇧 Project Description
+CryptoAML Guard is a software prototype of an analytical system designed to detect anomalous and fraudulent transactions in decentralized financial (blockchain) networks using Graph Neural Networks (GNN).
+
+The system is built for AML (Anti-Money Laundering) compliance, financial monitoring, and automated risk scoring of cryptocurrency addresses and transactions.
+
+🛠 Tech Stack
+Programming Language: Python 3.10+
+
+Machine Learning / GNN: PyTorch, PyTorch Geometric (PyG) (GCN Architecture)
+
+Backend API: FastAPI, Uvicorn
+
+Data Processing: NetworkX, Pandas, NumPy
+
+Frontend & Visualization: HTML5, CSS3, JavaScript (ES6), Vis.js Network
+
+🚀 Quick Start
+Clone the repository:
+
+Bash
+git clone [https://github.com/Aidana91/crypto-aml-system.git](https://github.com/Aidana91/crypto-aml-system.git)
+cd crypto-aml-system
+Run the backend server:
+
+Bash
+cd backend
+pip install -r requirements.txt
+uvicorn main:app --reload
+The server will run at: http://127.0.0.1:8000
+
+Launch the frontend interface:
+
+Open the frontend/index.html file in your browser (or use Live Server in VS Code).
 

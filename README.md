@@ -1,6 +1,6 @@
 # CryptoAML Guard System
 
-[ 🇷🇺 Русский ] | [ 🇬🇧 English ]
+[ 🇷🇺 Русский ] 
 
 ---
 
@@ -23,3 +23,14 @@
    ```bash
    git clone [https://github.com/Aidana91/crypto-aml-system.git](https://github.com/Aidana91/crypto-aml-system.git)
    cd crypto-aml-system
+2. **Запустите бэкенд:**
+   ```bash
+   cd backend
+   pip install -r requirements.txt
+   uvicorn main:app --reload
+Сервер запустится по адресу: http://127.0.0.1:8000
+
+ **Запустите интерфейс:**
+Откройте файл frontend/index.html в вашем браузере (или через расширение Live Server в VS Code).
+
+
